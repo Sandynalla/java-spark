@@ -29,18 +29,18 @@ import com.optum.mgd.spark.util.SparkUtility;
 public class SparkSqlSession {
 
 	private static SparkSession sparkSession;
-	private static final String MEMBER_A = "MEMBERA";
-	private static final String MEMBER_B = "MEMBERB";
-	private static final String MEMBERALTERNATE_A = "MEMBERALTERNATEB";
-	private static final String MEMBERALTERNATE_B = "MEMBERALTERNATEB";
-	private static final String MEMBERCOVERAGE_A = "MEMBERCOVERAGEA";
-	private static final String MEMBERCOVERAGE_B = "MEMBERCOVERAGEB";
-	private static final String csvMemberDirectory = "///Users///snalla16///Desktop///UDWExtraxcts///MBRMemTextFilecsv///sftp";
-	private static final String csvMemberAtlDirectory = "///Users///snalla16///Desktop///UDWExtraxcts///MBRAltTextFilecsv";
-	private static final String csvMemberCovDirectory = "///Users///snalla16///Desktop///UDWExtraxcts///MBRCovTextFilecsv";
-	private static final String memberGzFile = "///Users///snalla16///Desktop///UDWExtraxcts///MBR.0001.Member.1M.gz";
-	private static final String memberAltIdGzFile = "///Users///snalla16///Desktop///UDWExtraxcts///MBR.0001.MemberAltID.1M.gz";
-	private static final String memberCoverageGzFile = "///Users///snalla16///Desktop///UDWExtraxcts///MBR.0001.MemberCoverage.1M.gz";
+	private static final String MEMBER_A = "";
+	private static final String MEMBER_B = "";
+	private static final String MEMBERALTERNATE_A = "";
+	private static final String MEMBERALTERNATE_B = "";
+	private static final String MEMBERCOVERAGE_A = "";
+	private static final String MEMBERCOVERAGE_B = "";
+	private static final String csvMemberDirectory = "";
+	private static final String csvMemberAtlDirectory = "";
+	private static final String csvMemberCovDirectory = "";
+	private static final String memberGzFile = "";
+	private static final String memberAltIdGzFile = "";
+	private static final String memberCoverageGzFile = "";
 	private static final DBUtility dbUtility = new DBUtility();
 	private static final LoadProperties properties = new LoadProperties();
 
@@ -106,17 +106,17 @@ public class SparkSqlSession {
 
 			Long startTime = System.currentTimeMillis();
 			StructType memberSchema = new StructType(
-					new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-							DataTypes.createStructField("GIV_NM", DataTypes.StringType, false),
-							DataTypes.createStructField("FAM_NM", DataTypes.StringType, false),
-							DataTypes.createStructField("SRC_SBSCR_ID", DataTypes.StringType, false),
-							DataTypes.createStructField("DEPN_NBR", DataTypes.IntegerType, true),
-							DataTypes.createStructField("DEPN_SEQ_NUM", DataTypes.StringType, true),
-							DataTypes.createStructField("REL_CD", DataTypes.StringType, false),
-							DataTypes.createStructField("BTH_DT", DataTypes.DateType, false),
-							DataTypes.createStructField("GDR_TYP_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("MBR_ROW_EFF_DT", DataTypes.DateType, false),
-							DataTypes.createStructField("MBR_ROW_EXPIR_DT", DataTypes.DateType, false) });
+					new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.StringType, false),
+							DataTypes.createStructField("Column3", DataTypes.StringType, false),
+							DataTypes.createStructField("Column4", DataTypes.StringType, false),
+							DataTypes.createStructField("Column5", DataTypes.IntegerType, true),
+							DataTypes.createStructField("Column6", DataTypes.StringType, true),
+							DataTypes.createStructField("Column7", DataTypes.StringType, false),
+							DataTypes.createStructField("Column8", DataTypes.DateType, false),
+							DataTypes.createStructField("Column9", DataTypes.StringType, true),
+							DataTypes.createStructField("Column10", DataTypes.DateType, false),
+							DataTypes.createStructField("Column11", DataTypes.DateType, false) });
 
 			Dataset<Row> memberDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
 					.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
@@ -243,9 +243,9 @@ public class SparkSqlSession {
 
 			Long startTime = System.currentTimeMillis();
 			StructType memberAltIDschema = new StructType(
-					new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-							DataTypes.createStructField("ALT_ID_TYP_CD", DataTypes.StringType, false),
-							DataTypes.createStructField("ALT_ID_VAL", DataTypes.StringType, false) });
+					new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.StringType, false),
+							DataTypes.createStructField("Column3", DataTypes.StringType, false) });
 			Dataset<Row> memberAltDf = sparkSession.read().format("csv").option("header", false)
 					.option("delimiter", ",").option("ignoreLeadingWhiteSpace", true)
 					.option("ignoreTrailingWhiteSpace", true).option("dateFormat", "yyyymmdd").schema(memberAltIDschema)
@@ -333,21 +333,21 @@ public class SparkSqlSession {
 
 			Long startTime = System.currentTimeMillis();
 			StructType memberCovSchema = new StructType(
-					new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-							DataTypes.createStructField("COV_EFF_DT", DataTypes.DateType, true),
-							DataTypes.createStructField("COV_EXPIR_DT", DataTypes.DateType, true),
-							DataTypes.createStructField("GOVT_PGM_TYP_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("SRC_FUND_ARNG_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("COV_ROW_EFF_DT", DataTypes.DateType, true),
-							DataTypes.createStructField("COV_ROW_EXPIR_DT", DataTypes.DateType, true),
-							DataTypes.createStructField("SRC_MBR_ID", DataTypes.StringType, true),
-							DataTypes.createStructField("SRC_LGCY_POL_NUM", DataTypes.StringType, true),
-							DataTypes.createStructField("SRC_SYS_PRDCT_TYP_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("SRC_COV_EFF_DT", DataTypes.DateType, true),
-							DataTypes.createStructField("SRC_COV_TYP_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("CDB_SRC_SYS_CD", DataTypes.StringType, true),
-							DataTypes.createStructField("SRC_BEN_PLN_ID", DataTypes.StringType, true),
-							DataTypes.createStructField("ORIG_SRC_SYS_PRDCT_CD", DataTypes.StringType, true) });
+					new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.DateType, true),
+							DataTypes.createStructField("Column3", DataTypes.DateType, true),
+							DataTypes.createStructField("Column4", DataTypes.StringType, true),
+							DataTypes.createStructField("Column5", DataTypes.StringType, true),
+							DataTypes.createStructField("Column6", DataTypes.DateType, true),
+							DataTypes.createStructField("Column7", DataTypes.DateType, true),
+							DataTypes.createStructField("Column8", DataTypes.StringType, true),
+							DataTypes.createStructField("Column9", DataTypes.StringType, true),
+							DataTypes.createStructField("Column10", DataTypes.StringType, true),
+							DataTypes.createStructField("Column11", DataTypes.DateType, true),
+							DataTypes.createStructField("Column12", DataTypes.StringType, true),
+							DataTypes.createStructField("Column13", DataTypes.StringType, true),
+							DataTypes.createStructField("Column14", DataTypes.StringType, true),
+							DataTypes.createStructField("Column15", DataTypes.StringType, true) });
 
 			Dataset<Row> membCovDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
 					.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
@@ -407,17 +407,18 @@ public class SparkSqlSession {
 		String membCsvFile1 = null;
 		Long startTime = System.currentTimeMillis();
 		StructType memberSchema = new StructType(
-				new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-						DataTypes.createStructField("GIV_NM", DataTypes.StringType, false),
-						DataTypes.createStructField("FAM_NM", DataTypes.StringType, false),
-						DataTypes.createStructField("SRC_SBSCR_ID", DataTypes.StringType, false),
-						DataTypes.createStructField("DEPN_NBR", DataTypes.IntegerType, true),
-						DataTypes.createStructField("DEPN_SEQ_NUM", DataTypes.StringType, true),
-						DataTypes.createStructField("REL_CD", DataTypes.StringType, false),
-						DataTypes.createStructField("BTH_DT", DataTypes.DateType, false),
-						DataTypes.createStructField("GDR_TYP_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("MBR_ROW_EFF_DT", DataTypes.DateType, false),
-						DataTypes.createStructField("MBR_ROW_EXPIR_DT", DataTypes.DateType, false) });
+		new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.StringType, false),
+							DataTypes.createStructField("Column3", DataTypes.StringType, false),
+							DataTypes.createStructField("Column4", DataTypes.StringType, false),
+							DataTypes.createStructField("Column5", DataTypes.IntegerType, true),
+							DataTypes.createStructField("Column6", DataTypes.StringType, true),
+							DataTypes.createStructField("Column7", DataTypes.StringType, false),
+							DataTypes.createStructField("Column8", DataTypes.DateType, false),
+							DataTypes.createStructField("Column9", DataTypes.StringType, true),
+							DataTypes.createStructField("Column10", DataTypes.DateType, false),
+							DataTypes.createStructField("Column11", DataTypes.DateType, false) });
+
 
 	/*	Dataset<Row> memberDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
 				.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
@@ -494,9 +495,9 @@ public class SparkSqlSession {
 
 		Long startTime = System.currentTimeMillis();
 		StructType memberAltIDschema = new StructType(
-				new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-						DataTypes.createStructField("ALT_ID_TYP_CD", DataTypes.StringType, false),
-						DataTypes.createStructField("ALT_ID_VAL", DataTypes.StringType, false) });
+				new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.StringType, false),
+							DataTypes.createStructField("Column3", DataTypes.StringType, false) });
 		/*
 		 * Dataset<Row> memberAltDf = sparkSession.read().format("csv").option("header",
 		 * false).option("delimiter", ",") .option("ignoreLeadingWhiteSpace",
@@ -567,21 +568,22 @@ public class SparkSqlSession {
 
 		Long startTime = System.currentTimeMillis();
 		StructType memberCovSchema = new StructType(
-				new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-						DataTypes.createStructField("COV_EFF_DT", DataTypes.DateType, true),
-						DataTypes.createStructField("COV_EXPIR_DT", DataTypes.DateType, true),
-						DataTypes.createStructField("GOVT_PGM_TYP_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("SRC_FUND_ARNG_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("COV_ROW_EFF_DT", DataTypes.DateType, true),
-						DataTypes.createStructField("COV_ROW_EXPIR_DT", DataTypes.DateType, true),
-						DataTypes.createStructField("SRC_MBR_ID", DataTypes.StringType, true),
-						DataTypes.createStructField("SRC_LGCY_POL_NUM", DataTypes.StringType, true),
-						DataTypes.createStructField("SRC_SYS_PRDCT_TYP_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("SRC_COV_EFF_DT", DataTypes.DateType, true),
-						DataTypes.createStructField("SRC_COV_TYP_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("CDB_SRC_SYS_CD", DataTypes.StringType, true),
-						DataTypes.createStructField("SRC_BEN_PLN_ID", DataTypes.StringType, true),
-						DataTypes.createStructField("ORIG_SRC_SYS_PRDCT_CD", DataTypes.StringType, true) });
+						new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
+							DataTypes.createStructField("Column2", DataTypes.DateType, true),
+							DataTypes.createStructField("Column3", DataTypes.DateType, true),
+							DataTypes.createStructField("Column4", DataTypes.StringType, true),
+							DataTypes.createStructField("Column5", DataTypes.StringType, true),
+							DataTypes.createStructField("Column6", DataTypes.DateType, true),
+							DataTypes.createStructField("Column7", DataTypes.DateType, true),
+							DataTypes.createStructField("Column8", DataTypes.StringType, true),
+							DataTypes.createStructField("Column9", DataTypes.StringType, true),
+							DataTypes.createStructField("Column10", DataTypes.StringType, true),
+							DataTypes.createStructField("Column11", DataTypes.DateType, true),
+							DataTypes.createStructField("Column12", DataTypes.StringType, true),
+							DataTypes.createStructField("Column13", DataTypes.StringType, true),
+							DataTypes.createStructField("Column14", DataTypes.StringType, true),
+							DataTypes.createStructField("Column15", DataTypes.StringType, true) });
+
 
 		/*
 		 * Dataset<Row> membCovDf = sparkSession.read().format("csv").option("header",
