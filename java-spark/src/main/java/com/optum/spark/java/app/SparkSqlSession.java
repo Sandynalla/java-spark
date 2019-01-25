@@ -47,11 +47,17 @@ public class SparkSqlSession {
 	private static String dbUser;
 	private static String dbPass;
 	private static String dbUrl;
+	private static String sftpHost;
+	private static String sftpUser;
+	private static String sftpPass;
+
 	static {
 		dbUser=properties.getDbUser();
 		dbPass=properties.getDbPass();
 		dbUrl=properties.getDbUrl();
-		
+		sftpHost=properties.getSftpHost();
+		sftpUser=properties.getSftpUser();
+		sftpPass=properties.getSftpPass();
 	}
 	/*
 	 * public static void main(String args[]) throws InterruptedException {
@@ -61,12 +67,12 @@ public class SparkSqlSession {
 	 * LaadMemberCoverage()); Set<Callable<Object>> calls = new HashSet<>();
 	 * calls.add(memberCall); calls.add(memberAltIdCall);
 	 * //calls.add(memberCovCall);
-	 * 
+	 *
 	 * //ExecutorService service = Executors.newCachedThreadPool(); ExecutorService
 	 * service = Executors.newFixedThreadPool(3);
-	 * 
+	 *
 	 * service.invokeAll(calls); service.shutdown(); System.exit(0);
-	 * 
+	 *
 	 * }
 	 */
 	public static class LaadMember implements Runnable {
@@ -126,43 +132,6 @@ public class SparkSqlSession {
 			memberDf.count();
 			memberDf.write().format("csv").save(csvMemberDirectory);
 
-			// read from sftp -- read to spark df and load to cvs table in the desired
-			// location
-			/*
-			 * String fileNameFromECG =
-			 * SparkUtility.getFilesNamesFromECG("MBR.0001.Member2*.gz"); Dataset<Row>
-			 * sftpMemberDf = spark.read(). format("com.springml.spark.sftp").
-			 * option("host", "ecgpi.healthtechnologygroup.com").
-			 * option("username","is00c5m"). option("password", "91GGsnma").
-			 * option("fileType", "gz"). load("aceudw/dev/"+fileNameFromECG);
-			 * 
-			 * sftpMemberDf.show();
-			 * 
-			 * sftpMemberDf.write().format("csv").save(csvDirectory);
-			 */
-			// df.createTempView("member");
-
-			/*
-			 * monotonically_increasing_id MBR.Member10MRows19.gz 99MB uncompressed - 865 MB
-			 * MBR.0001.Member.25Rows.txt -- 45056 rows - 11.2 seconds for first time and
-			 * 6.7 sec for next runs, Member10000rows.txt option("timestampFormat",
-			 * "yyyyMMdd HH:mi:ss") .option("dateFormat", "yyyymmdd") Member1000000Rows.txt
-			 * - 86MB -- 15.12 sec -- home network -- 59.8 sec - with indexes - 62 sec, 42
-			 * secs, 38 sec Member10MRows.txt -- 864MB -- 136.659747 s -- 2.3 minutes, with
-			 * indexes : 5.8 minutes
-			 */
-
-			/*
-			 * df.createTempView("member"); Dataset<Row> badRecordsDf =
-			 * spark.sql("select * from member where GIV_NM is null");
-			 * badRecordsDf.show(100);
-			 */
-
-			/*
-			 * Comparison between compressed and uncompressed with Indexes
-			 * MBR.Member10MRows19.gz -- 99MB uncompressed - 865 MB - Member10MRows.txt -
-			 * 864 MB -- 9.4 minutes MBR.Member10MRows.txt - 865 MB --
-			 */
 			try {
 				membCsvFile = SparkUtility.getCsvFile(csvMemberDirectory);
 			} catch (FileNotFoundException e) {
@@ -220,9 +189,7 @@ public class SparkSqlSession {
 			try {
 				loadMemberAltIdFile(sparkSession);
 			} catch (SparkException | AnalysisException | FileNotFoundException e) {
-				// TODO Auto-generated catch block
 
-				// send failure email12222221
 				e.printStackTrace();
 			} finally {
 
@@ -419,31 +386,18 @@ public class SparkSqlSession {
 							DataTypes.createStructField("Column10", DataTypes.DateType, false),
 							DataTypes.createStructField("Column11", DataTypes.DateType, false) });
 
-
-	/*	Dataset<Row> memberDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
-				.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
-				.option("dateFormat", "yyyymmdd").schema(memberSchema).csv(memberGzFile);
-
-		memberDf.show(30);
-		memberDf.count();
-		memberDf.write().format("csv").save(csvMemberDirectory);*/
-
-		// read from sftp -- read to spark df and load to cvs table in the desired
-		// location
-
-		
 		String fileNameFromECG =
-		 SparkUtility.getFileNamesFromECG("MBR.0001.Member.[0-9].*gz"); 
+		 SparkUtility.getFileNamesFromECG("//sftpFileName");
 		Dataset<Row>
 		 sftpMemberDf = spark.read().format("com.springml.spark.sftp") .option("host",
-		 "ecgpi.healthtechnologygroup.com").option("username", "is00c5m")
-		  .option("password", "91GGsnma").option("fileType",
-		 "csv").schema(memberSchema) .load("aceudw/dev/" + fileNameFromECG);
-		 
+		 sftpHost).option("username", sftpUser)
+		  .option("password", sftpPass).option("fileType",
+		 "csv").schema(memberSchema) .load("//sftpDir" + fileNameFromECG);
+
 		 sftpMemberDf.show();
-		 
+
 		 sftpMemberDf.write().format("csv").save(csvMemberDirectory);
-		 
+
 
 		try {
 			membCsvFile1 = SparkUtility.getCsvFile(csvMemberDirectory);
@@ -498,21 +452,12 @@ public class SparkSqlSession {
 				new StructField[] { DataTypes.createStructField("Column1", DataTypes.StringType, false),
 							DataTypes.createStructField("Column2", DataTypes.StringType, false),
 							DataTypes.createStructField("Column3", DataTypes.StringType, false) });
-		/*
-		 * Dataset<Row> memberAltDf = sparkSession.read().format("csv").option("header",
-		 * false).option("delimiter", ",") .option("ignoreLeadingWhiteSpace",
-		 * true).option("ignoreTrailingWhiteSpace", true) .option("dateFormat",
-		 * "yyyymmdd").schema(memberAltIDschema).csv(memberAltIdGzFile);
-		 * 
-		 * 
-		 * memberAltDf.show(30); memberAltDf.count();
-		 * memberAltDf.write().format("csv").save(csvMemberAtlDirectory);
-		 */
-		String fileNameFromECG = SparkUtility.getFileNamesFromECG("MBR.0001.MemberAlternateID.[0-9].*gz");
+
+		String fileNameFromECG = SparkUtility.getFileNamesFromECG("//sftpFileName");
 		Dataset<Row> sftpMemberAltDf = spark.read().format("com.springml.spark.sftp")
-				.option("host", "ecgpi.healthtechnologygroup.com").option("username", "is00c5m")
-				.option("password", "91GGsnma").option("fileType", "csv").schema(memberAltIDschema)
-				.load("aceudw/dev/" + fileNameFromECG);
+				.option("host", sftpHost).option("username", sftpUser)
+				.option("password", sftpPass).option("fileType", "csv").schema(memberAltIDschema)
+				.load("//sftpDir" + fileNameFromECG);
 
 		sftpMemberAltDf.show();
 
@@ -584,22 +529,11 @@ public class SparkSqlSession {
 							DataTypes.createStructField("Column14", DataTypes.StringType, true),
 							DataTypes.createStructField("Column15", DataTypes.StringType, true) });
 
-
-		/*
-		 * Dataset<Row> membCovDf = sparkSession.read().format("csv").option("header",
-		 * false).option("delimiter", ",") .option("ignoreLeadingWhiteSpace",
-		 * true).option("ignoreTrailingWhiteSpace", true) .option("dateFormat",
-		 * "yyyymmdd").schema(memberCovSchema) .csv(memberCoverageGzFile);
-		 * 
-		 * membCovDf.show(30); membCovDf.count();
-		 * membCovDf.write().format("csv").save(csvMemberCovDirectory);
-		 */
-
-		String fileNameFromECG = SparkUtility.getFileNamesFromECG("MBR.0001.MemberCoverage.[0-9].*gz");
+		String fileNameFromECG = SparkUtility.getFileNamesFromECG("//sftpFileName");
 		Dataset<Row> sftpMemberCovDf = spark.read().format("com.springml.spark.sftp")
-				.option("host", "ecgpi.healthtechnologygroup.com").option("username", "is00c5m")
-				.option("password", "91GGsnma").option("fileType", "csv").schema(memberCovSchema)
-				.load("aceudw/dev/" + fileNameFromECG);
+				.option("host", sftpHost).option("username", sftpUser)
+				.option("password", sftpPass).option("fileType", "csv").schema(memberCovSchema)
+				.load("//sftpDir" + fileNameFromECG);
 
 		sftpMemberCovDf.show();
 
@@ -649,16 +583,16 @@ public class SparkSqlSession {
 		SparkSqlSession session = new SparkSqlSession();
 		try {
 		session.loadMemberSeq(sparkSession);
-		
+
 		session.loadMemberAltSeq(sparkSession);
 	// session.loadMemberCovSeq(sparkSession);
-		 
+
 		}catch(Exception e) {
-	
+
 		}finally {
-			
-		
-		
+
+
+
 		sparkSession.close();
 		}
 	}
