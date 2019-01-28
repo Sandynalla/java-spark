@@ -112,17 +112,17 @@ public class SparkSqlSession {
 
 				Long startTime = System.currentTimeMillis();
 				StructType memberSchema = new StructType(
-						new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-								DataTypes.createStructField("GIV_NM", DataTypes.StringType, false),
-								DataTypes.createStructField("FAM_NM", DataTypes.StringType, false),
-								DataTypes.createStructField("SRC_SBSCR_ID", DataTypes.StringType, false),
-								DataTypes.createStructField("DEPN_NBR", DataTypes.IntegerType, true),
-								DataTypes.createStructField("DEPN_SEQ_NUM", DataTypes.StringType, true),
-								DataTypes.createStructField("REL_CD", DataTypes.StringType, false),
-								DataTypes.createStructField("BTH_DT", DataTypes.DateType, false),
-								DataTypes.createStructField("GDR_TYP_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("MBR_ROW_EFF_DT", DataTypes.DateType, false),
-								DataTypes.createStructField("MBR_ROW_EXPIR_DT", DataTypes.DateType, false) });
+						new StructField[] { DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.IntegerType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, false) });
 
 				/*Dataset<Row> memberDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
 						.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
@@ -132,12 +132,12 @@ public class SparkSqlSession {
 				memberDf.count();
 				memberDf.write().format("csv").save(csvMemberDirectory);*/
 				String fileNameFromECG =
-						 SparkUtility.getFileNamesFromECG("MBR.0001.Member.[0-9].*gz");
+						 SparkUtility.getFileNamesFromECG("//fileNameRegx");
 						Dataset<Row>
 						 sftpMemberDf = spark.read().format("com.springml.spark.sftp") .option("host",
 						 sftpHost).option("username", sftpUser)
 						  .option("password", sftpPass).option("fileType",
-						 "csv").schema(memberSchema) .load("aceudw/dev/" + fileNameFromECG);
+						 "csv").schema(memberSchema) .load("//sftpDir" + fileNameFromECG);
 
 						 sftpMemberDf.show();
 
@@ -222,9 +222,9 @@ public class SparkSqlSession {
 
 				Long startTime = System.currentTimeMillis();
 				StructType memberAltIDschema = new StructType(
-						new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-								DataTypes.createStructField("ALT_ID_TYP_CD", DataTypes.StringType, false),
-								DataTypes.createStructField("ALT_ID_VAL", DataTypes.StringType, false) });
+						new StructField[] { DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, false) });
 			/*	Dataset<Row> memberAltDf = sparkSession.read().format("csv").option("header", false)
 						.option("delimiter", ",").option("ignoreLeadingWhiteSpace", true)
 						.option("ignoreTrailingWhiteSpace", true).option("dateFormat", "yyyymmdd").schema(memberAltIDschema)
@@ -234,11 +234,11 @@ public class SparkSqlSession {
 				memberAltDf.count();
 				memberAltDf.write().format("csv").save(csvMemberAtlDirectory);*/
 
-				String fileNameFromECG = SparkUtility.getFileNamesFromECG("MBR.0001.MemberAlternateID.[0-9].*gz");
+				String fileNameFromECG = SparkUtility.getFileNamesFromECG("//fileNameRegx");
 				Dataset<Row> sftpMemberAltDf = spark.read().format("com.springml.spark.sftp")
 						.option("host", sftpHost).option("username", sftpUser)
 						.option("password", sftpPass).option("fileType", "csv").schema(memberAltIDschema)
-						.load("aceudw/dev/" + fileNameFromECG);
+						.load("//sftpDir" + fileNameFromECG);
 
 				sftpMemberAltDf.show();
 
@@ -319,21 +319,21 @@ public class SparkSqlSession {
 
 				Long startTime = System.currentTimeMillis();
 				StructType memberCovSchema = new StructType(
-						new StructField[] { DataTypes.createStructField("MBR_PTY_ID", DataTypes.StringType, false),
-								DataTypes.createStructField("COV_EFF_DT", DataTypes.DateType, true),
-								DataTypes.createStructField("COV_EXPIR_DT", DataTypes.DateType, true),
-								DataTypes.createStructField("GOVT_PGM_TYP_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("SRC_FUND_ARNG_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("COV_ROW_EFF_DT", DataTypes.DateType, true),
-								DataTypes.createStructField("COV_ROW_EXPIR_DT", DataTypes.DateType, true),
-								DataTypes.createStructField("SRC_MBR_ID", DataTypes.StringType, true),
-								DataTypes.createStructField("SRC_LGCY_POL_NUM", DataTypes.StringType, true),
-								DataTypes.createStructField("SRC_SYS_PRDCT_TYP_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("SRC_COV_EFF_DT", DataTypes.DateType, true),
-								DataTypes.createStructField("SRC_COV_TYP_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("CDB_SRC_SYS_CD", DataTypes.StringType, true),
-								DataTypes.createStructField("SRC_BEN_PLN_ID", DataTypes.StringType, true),
-								DataTypes.createStructField("ORIG_SRC_SYS_PRDCT_CD", DataTypes.StringType, true) });
+						new StructField[] { DataTypes.createStructField("ColumnName", DataTypes.StringType, false),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.DateType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true),
+								DataTypes.createStructField("ColumnName", DataTypes.StringType, true) });
 
 				/*Dataset<Row> membCovDf = sparkSession.read().format("csv").option("header", false).option("delimiter", ",")
 						.option("ignoreLeadingWhiteSpace", true).option("ignoreTrailingWhiteSpace", true)
@@ -343,11 +343,11 @@ public class SparkSqlSession {
 				membCovDf.count();
 				membCovDf.write().format("csv").save(csvMemberCovDirectory);*/
 
-				String fileNameFromECG = SparkUtility.getFileNamesFromECG("MBR.0001.MemberCoverage.[0-9].*gz");
+				String fileNameFromECG = SparkUtility.getFileNamesFromECG("//fileNameRegx");
 				Dataset<Row> sftpMemberCovDf = spark.read().format("com.springml.spark.sftp")
 						.option("host", sftpHost).option("username", sftpUser)
 						.option("password", sftpPass).option("fileType", "csv").schema(memberCovSchema)
-						.load("aceudw/dev/" + fileNameFromECG);
+						.load("//sftpDir" + fileNameFromECG);
 
 				sftpMemberCovDf.show();
 
